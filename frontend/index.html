@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <title>Wikipedia 猜詞遊戲</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/frontend/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Wikipedia 猜詞遊戲</h1>
+      <section class="card">
+        <h2>開始新遊戲</h2>
+        <form id="start-form">
+          <label for="title">指定條目（可留空隨機）：</label>
+          <input id="title" name="title" type="text" placeholder="例如：Albert Einstein" />
+          <button type="submit">開始</button>
+        </form>
+        <div id="session-info" class="info"></div>
+      </section>
+
+      <section class="card">
+        <h2>提問</h2>
+        <form id="question-form">
+          <label for="question">輸入你的問題：</label>
+          <textarea id="question" name="question" rows="3" placeholder="這個人是在 1879 年出生的嗎？" required></textarea>
+          <button type="submit">送出問題</button>
+        </form>
+        <div id="answer" class="answer"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/frontend/main.js"></script>
+  </body>
+</html>
+

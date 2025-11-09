@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Noto Sans TC", "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  background: #111827;
+  color: #f3f4f6;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+h1, h2 {
+  margin-top: 0;
+}
+
+.card {
+  background: rgba(30, 41, 59, 0.9);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.6);
+  color: inherit;
+  margin-bottom: 1rem;
+}
+
+button {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+}
+
+.info,
+.answer {
+  white-space: pre-wrap;
+  background: rgba(15, 23, 42, 0.65);
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  min-height: 3rem;
+}
+
