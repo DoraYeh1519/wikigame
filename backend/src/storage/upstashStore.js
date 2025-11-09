@@ -15,13 +15,19 @@ function getClient() {
 
 export async function saveSession(sessionId, data, ttlSeconds = config.sessionTtlSeconds) {
   const client = getClient();
-  await client.set(sessionId, JSON.stringify(data), { ex: ttlSeconds });
+  await client.set(sessionId, data, { ex: ttlSeconds });
 }
 
 export async function loadSession(sessionId) {
   const client = getClient();
   const value = await client.get(sessionId);
-  return value ? JSON.parse(value) : null;
+  if (!value) {
+    return null;
+  }
+  if (typeof value === 'string') {
+    return JSON.parse(value);
+  }
+  return value;
 }
 
 export async function deleteSession(sessionId) {
