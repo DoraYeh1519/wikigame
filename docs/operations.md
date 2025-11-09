@@ -13,17 +13,17 @@
 | `failed_to_start_session` | Wikipedia API 或 Upstash 寫入失敗 | 檢查 Wikipedia API 狀態、重試；確認 Upstash key 是否有效 |
 | `judge_failed` | LLM 呼叫或資料檢索失敗 | 查看 Vercel 日誌中的錯誤堆疊，重試或通知維運 |
 | `session_not_found` | Session 過期或不存在 | 提醒玩家重新開始；可調整 `SESSION_TTL` |
-| `無法回答` 過多 | 代表 overlap 門檻過高或規則不足 | 調整 `TOP_K`、`OVERLAP_THRESHOLD`，或新增規則 |
+| `無法判斷` 過多 | 代表檢索門檻過高或段落不匹配 | 調整 `TOP_K`、`OVERLAP_THRESHOLD`，或微調 tokenize 規則 |
 
 ## 調校建議
 
 - **段落檢索**：`config.overlapThreshold` 預設 0.15，可視實際命中率調整。
-- **規則擴充**：於 `rules/synonyms.js` 增補同義詞；在 `rules/engine.js` 增加新的規則邏輯。
+- **純 LLM 判斷**：若想提高準度，可在後端額外傳遞多個段落給 LLM（例如 top-3），或對問題做前處理提示。
 - **LLM 模型**：如需更高品質，可改用 `gemini-1.5-pro`，但注意成本增加。
 
 ## 日誌策略
 
-- Log 內容僅保留 `session_id`、`question`（可選遮蔽）與 `answer`、`evidence_index`。
+- Log 內容僅保留 `session_id`、`question`（可選遮蔽）與 `answer`。
 - 若需更多追蹤資訊，可新增 `request_id` 或 Trace header，但避免記錄玩家個資。
 
 ## 安全與隱私
@@ -34,7 +34,7 @@
 ## 災難復原
 
 - 若 Upstash 資料遺失，影響僅為玩家當前 Session，可重新開始遊戲即可。
-- 若 Gemini API 無法使用，可臨時 fallback 為規則式或返回 `無法回答`，並於前端顯示提示訊息。
+- 若 Gemini API 無法使用，可暫時統一返回 `無法判斷`，並於前端顯示提示訊息。
 
 ---
 

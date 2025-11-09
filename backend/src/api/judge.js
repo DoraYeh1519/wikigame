@@ -1,12 +1,10 @@
 import { loadSession } from '../storage/upstashStore.js';
 import { sanitizeInput } from '../utils/sanitize.js';
-import { tryRuleAnswer } from '../rules/engine.js';
 import { rankParagraphs } from '../services/retriever.js';
 import { askGemini } from '../services/llmClient.js';
-import { validateAnswer } from '../services/evidenceChecker.js';
 import { logger } from '../logger.js';
 
-const allowedAnswers = new Set(['是', '否', '無關', '無法回答']);
+const allowedAnswers = new Set(['是', '否', '無關', '無法判斷']);
 
 export async function judgeHandler(req, res) {
   try {
@@ -34,52 +32,29 @@ export async function judgeHandler(req, res) {
       return;
     }
 
-    const ruleAnswer = tryRuleAnswer(sanitizedQuestion, paragraphs);
-    if (ruleAnswer) {
-      const evidenceParagraph = paragraphs[ruleAnswer.evidenceIndex];
-      res.json({
-        session_id: sessionId,
-        answer: ruleAnswer.answer,
-        evidence: evidenceParagraph,
-        evidence_index: ruleAnswer.evidenceIndex,
-      });
-      return;
-    }
-
     const { best } = rankParagraphs(sanitizedQuestion, paragraphs);
 
     if (!best) {
       res.json({
         session_id: sessionId,
-        answer: '無法回答',
-        evidence: null,
-        evidence_index: null,
+        answer: '無法判斷',
       });
       return;
     }
 
-    const evidenceParagraph = best.paragraph;
-    const evidenceIndex = best.index;
-
     let answer = await askGemini({
-      paragraph: evidenceParagraph,
-      index: evidenceIndex,
+      paragraph: best.paragraph,
+      index: best.index,
       question: sanitizedQuestion,
     });
 
     if (!allowedAnswers.has(answer)) {
-      answer = '無法回答';
-    }
-
-    if (!validateAnswer(answer, sanitizedQuestion, evidenceParagraph)) {
-      answer = '無法回答';
+      answer = '無法判斷';
     }
 
     res.json({
       session_id: sessionId,
       answer,
-      evidence: evidenceParagraph,
-      evidence_index: evidenceIndex,
     });
   } catch (error) {
     logger.error({ err: error }, 'Failed to judge question');

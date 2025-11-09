@@ -2,9 +2,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { config } from '../config.js';
 
 const SYSTEM_PROMPT =
-  '你是遊戲裁判。僅根據下面提供的【唯一】段落文字做判斷；不得使用任何模型常識或網路知識。只輸出一個中文詞：是 / 否 / 無關 / 無法回答。若段落沒有足夠資訊，回「無法回答」。不要輸出其他文字或標點。';
+  '你是遊戲裁判。僅根據下面提供的【唯一】段落文字做判斷；不得使用任何模型常識或網路知識。只輸出一個中文詞：是 / 否 / 無關 / 無法判斷。若段落沒有足夠資訊，回「無法判斷」。不要輸出其他文字或標點。';
 
-const ALLOWED_ANSWERS = new Set(['是', '否', '無關', '無法回答']);
+const ALLOWED_ANSWERS = new Set(['是', '否', '無關', '無法判斷']);
 
 let client;
 let modelFactoryOverride = null;
@@ -48,6 +48,6 @@ export async function askGemini({ paragraph, index, question }) {
 
   const text = response?.response?.text?.() ?? '';
   const normalized = text.trim();
-  return ALLOWED_ANSWERS.has(normalized) ? normalized : '無法回答';
+  return ALLOWED_ANSWERS.has(normalized) ? normalized : '無法判斷';
 }
 

@@ -4,14 +4,13 @@ const sessionInfo = document.getElementById('session-info');
 const answerBox = document.getElementById('answer');
 
 let sessionId = null;
-let currentTitle = null;
 
 function renderSessionInfo() {
   if (!sessionId) {
     sessionInfo.textContent = '尚未開始遊戲。';
     return;
   }
-  sessionInfo.textContent = `Session: ${sessionId}\n條目：${currentTitle}`;
+  sessionInfo.textContent = '已建立新遊戲，開始提問吧！';
 }
 
 function renderAnswer(result) {
@@ -19,38 +18,25 @@ function renderAnswer(result) {
     answerBox.textContent = '';
     return;
   }
-  const { answer, evidence, evidence_index: evidenceIndex } = result;
-  const lines = [
-    `回答：${answer ?? '無法回答'}`,
-  ];
-  if (typeof evidenceIndex === 'number') {
-    lines.push(`證據段落 #${evidenceIndex}`);
-  }
-  if (evidence) {
-    lines.push('---');
-    lines.push(evidence);
-  }
-  answerBox.textContent = lines.join('\n');
+  const { answer } = result;
+  answerBox.textContent = `回答：${answer ?? '無法判斷'}`;
 }
 
 startForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   answerBox.textContent = '建立遊戲中...';
-  const formData = new FormData(startForm);
-  const title = formData.get('title');
 
   try {
     const response = await fetch('/api/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: title || undefined }),
+      body: JSON.stringify({}),
     });
     if (!response.ok) {
       throw new Error(`start failed with status ${response.status}`);
     }
     const data = await response.json();
     sessionId = data.session_id;
-    currentTitle = data.title;
     renderSessionInfo();
     renderAnswer(null);
   } catch (error) {

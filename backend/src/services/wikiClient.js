@@ -26,24 +26,6 @@ function extractPageData(data) {
   return { title, extract, pageId: page.pageid };
 }
 
-export async function fetchArticleByTitle(title) {
-  const url = buildUrl({
-    action: 'query',
-    format: 'json',
-    prop: 'extracts',
-    explaintext: 'true',
-    redirects: '1',
-    titles: title,
-  });
-
-  const response = await fetch(url, { headers: { 'User-Agent': 'wikigame/1.0 (https://wikigame-two.vercel.app/)' } });
-  if (!response.ok) {
-    throw new Error(`Wikipedia request failed: ${response.status}`);
-  }
-  const json = await response.json();
-  return extractPageData(json);
-}
-
 export async function fetchRandomArticle() {
   const url = buildUrl({
     action: 'query',

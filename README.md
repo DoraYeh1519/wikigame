@@ -1,19 +1,19 @@
 # Wikipedia 猜詞遊戲（Vercel 版）
 
-基於 Wikipedia 條目建立的 `是 / 否 / 無關 / 無法回答` 猜詞遊戲。後端採 Node.js + Vercel Serverless Functions，資料暫存使用 Upstash Redis，LLM 判斷則由 Google Gemini 完成。
+基於 Wikipedia 條目建立的 `是 / 否 / 無關 / 無法判斷` 猜詞遊戲。後端採 Node.js + Vercel Serverless Functions，資料暫存使用 Upstash Redis，LLM 判斷僅根據段落文本給出答案。
 
 ## 功能摘要
 
-- `/api/start`：隨機（或自訂標題）載入 Wikipedia 條目、切成段落並建立遊戲 Session。
-- `/api/judge`：接收玩家問題，執行規則判斷 → 段落檢索 → Gemini 判斷 → 證據檢查，最後回傳答案與證據段落。
-- 前端靜態頁面提供最小互動介面，僅顯示必要段落避免洩漏全文。
+- `/api/start`：隨機挑選 Wikipedia 條目、切成段落並建立遊戲 Session。
+- `/api/judge`：接收玩家問題，執行段落檢索 → Gemini 判斷 → 答案正規化，最後回傳唯一答案。
+- 前端靜態頁面提供最小互動介面，不顯示完整段落，僅接受簡答結果。
 
 ## 專案結構
 
 ```
 backend/           # Node.js 後端程式碼
   ├─ api/          # Vercel 入口
-  ├─ src/          # 核心邏輯（services, rules, storage, utils）
+  ├─ src/          # 核心邏輯（services, storage, utils）
   └─ tests/        # Jest 單元測試
 frontend/          # 靜態單頁前端
 docs/              # 部署與營運文件

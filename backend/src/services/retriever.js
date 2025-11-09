@@ -1,10 +1,5 @@
 import { tokenize } from './textSplitter.js';
-import { normalizeToken } from '../rules/synonyms.js';
 import { config } from '../config.js';
-
-function normalizeTokens(tokens) {
-  return tokens.map((token) => normalizeToken(token.toLowerCase()));
-}
 
 function unique(tokens) {
   return [...new Set(tokens)];
@@ -28,11 +23,11 @@ export function rankParagraphs(question, paragraphs, options = {}) {
   const threshold = options.threshold ?? config.overlapThreshold;
   const minTokenOverlap = options.minTokenOverlap ?? config.minTokenOverlap;
 
-  const questionTokens = normalizeTokens(tokenize(question));
+  const questionTokens = tokenize(question).map((token) => token.toLowerCase());
 
   const scored = paragraphs
     .map((paragraph, index) => {
-      const paragraphTokens = normalizeTokens(tokenize(paragraph));
+      const paragraphTokens = tokenize(paragraph).map((token) => token.toLowerCase());
       const { score, overlapCount } = computeOverlap(questionTokens, paragraphTokens);
       return { index, score, overlapCount, paragraph };
     })
